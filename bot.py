@@ -59,7 +59,10 @@ async def unban(ctx, *, member):
 
 @client.command(aliases=['kdrama'])
 async def kbot(ctx, *, drama):
-    synopsis, rating, members, img, title = kdrama_scraper.getstuff(drama)
+    if drama == "suggest":
+        synopsis, rating, members, img, title = kdrama_scraper.getSuggest()
+    else:
+        synopsis, rating, members, img, title = kdrama_scraper.getstuff(drama)
     # await ctx.send(synopsis)
     # await ctx.send(rating)
     # await ctx.send(members)
@@ -77,4 +80,4 @@ async def kbot(ctx, *, drama):
     embed.set_image(url = img)
     await ctx.send(embed = embed)
 
-client.run('Nzk2NDI0MDQxMzQ2MjM2NDQ3.X_XtsA.e4JtExcqNtliznHLy241E3WJDUk')
+client.run('')
