@@ -13,7 +13,12 @@ def getTop(soup):
     for box in boxes:
         try:
             rank = box.find('div', class_='ranking pull-right').text.strip()[1:]
-            ranks.append(int(rank))
+            classification = box.find('span', class_='text-muted').text.strip().split()
+            
+            if classification[0] == 'Korean' and classification[1] == 'Drama':
+                ranks.append(int(rank))
+            else:
+                ranks.append(999999)
         
         except:
             ranks.append(999999)
@@ -34,9 +39,11 @@ def getRandom(soup):
 def getTopPage(soup):
     highest_rank = getTop(soup)
     href = highest_rank.find('a').get('href')
+
     main_url = 'https://mydramalist.com/' + href
     return main_url
 
+#ACCESS DRAMA PAGE OF FIRST RESULT IF THERE
 def getRandomPage(soup):
     random_box = getRandom(soup)
     href = random_box.find('a').get('href')
@@ -44,6 +51,7 @@ def getRandomPage(soup):
     print(main_url)
     return main_url
 
+#GET COVER IMAGE FROM DRAMA
 def getImg(drama_page):
     cover = drama_page.find('div', class_='film-cover')
     img = cover.find('img', class_='img-responsive')
@@ -51,7 +59,7 @@ def getImg(drama_page):
     return src
 
 #ACCESS DRAMA PAGE OF FIRST RESULT IF THERE
-def getstuff(drama):
+def getStuff(drama):
     # GET URL AND USER INPUT
     url = 'https://mydramalist.com/search?q='
 
@@ -92,7 +100,6 @@ def getstuff(drama):
         members.append(member_name)
 
     return synopsis, rating, members, img, title, genres
-
 
 def getSuggest():
 
@@ -142,4 +149,5 @@ def getSuggest():
     # genres = genre_list.find_all('a', class_='text-primary') 
 
     #Reviews
-getstuff('true beauty')
+
+a, b, c, d, e, f = getStuff('crash landing on you')
