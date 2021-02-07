@@ -150,6 +150,7 @@ def getSuggest():
     #Reviews
 
 def getRecommend(genre):
+    genre = [g.lower() for g in genre.split()]
     genres = {"action" : "1", "comedy" : "17", "drama" : "25", "law" : "18", "romance" : "19", "sci-fi" : "27", "crime" : "21", "medical" : "30", "mystery" : "11", "tragedy" : "39"}
     url = 'https://mydramalist.com/search?adv=titles&ty=68&ge={list_genres}&st=3&so=top'
     genre_string = ""
