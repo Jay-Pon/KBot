@@ -57,12 +57,31 @@ async def unban(ctx, *, member):
             await ctx.send(f'Unbanned {user.mention}')
             return
 
+@client.command()
+async def recommend(ctx, *, genres):
+    synopsis, rating, members, img, title, genres = kdrama_scraper.getSuggest()
+    members = ", ".join(members)
+    genres = ", ".join(genres)
+
+    embed = discord.Embed(
+        title = title,
+        colour = discord.Colour.blue()
+    )
+
+    
+    embed.add_field(name = 'Synopsis', value = synopsis, inline=False)
+    embed.add_field(name = 'Ratings', value = rating, inline=False)
+    embed.add_field(name = 'Cast', value = members, inline=False)
+    embed.add_field(name = 'Genres', value = members, inline=False)
+    embed.set_image(url = img)
+    await ctx.send(embed = embed)
+
 @client.command(aliases=['kdrama'])
 async def kbot(ctx, *, drama):
     if drama == "suggest":
         synopsis, rating, members, img, title, genres = kdrama_scraper.getSuggest()
     else:
-        synopsis, rating, members, img, title, genres = kdrama_scraper.getstuff(drama)
+        synopsis, rating, members, img, title, genres = kdrama_scraper.getStuff(drama)
     # await ctx.send(synopsis)
     # await ctx.send(rating)
     # await ctx.send(members)

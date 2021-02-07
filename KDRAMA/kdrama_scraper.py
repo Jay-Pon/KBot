@@ -59,9 +59,8 @@ def getImg(drama_page):
     return src
 
 #ACCESS DRAMA PAGE OF FIRST RESULT IF THERE
-def getStuff(drama):
+def getStuff(drama,  url = 'https://mydramalist.com/search?q='):
     # GET URL AND USER INPUT
-    url = 'https://mydramalist.com/search?q='
 
     #search_query = input("Drama name: ").replace(" ", "+")
     search_query = drama.lower()
@@ -150,4 +149,46 @@ def getSuggest():
 
     #Reviews
 
-a, b, c, d, e, f = getStuff('crash landing on you')
+def getRecommend(genre):
+    genres = {"action" : "1", "comedy" : "17", "drama" : "25", "law" : "18", "romance" : "19", "sci-fi" : "27", "crime" : "21", "medical" : "30", "mystery" : "11", "tragedy" : "39"}
+    url = 'https://mydramalist.com/search?adv=titles&ty=68&ge={list_genres}&st=3&so=top'
+    genre_string = ""
+    for g in genre:
+        genre_string += genres[g] + ","
+    url = url.format(list_genres = genre_string)
+
+    page = requests.get(url)
+    soup = bs(page.text, 'html.parser')
+
+    main_url = getTopPage(soup)
+    drama_page = bs(requests.get(main_url).text, 'html.parser')
+
+    #SCRAPE RELEVANT DATA
+    #Rating, Cast, Description, image
+    img = getImg(drama_page)
+
+    drama_info = drama_page.find('div', class_='col-sm-8')
+    title = drama_page.find('h1', class_='film-title').text
+
+    #show synopsis
+    synopsis = drama_info.find('div', class_='show-synopsis').text.strip()
+
+    #Rating
+    rating = drama_info.find('div', class_='hfs').text.strip()
+
+    #genres
+    genre_area = drama_info.find('li', class_='show-genres')
+    genres = [genre.text for genre in genre_area.find_all('a', class_='text-primary')]
+
+    #cast
+    cast_info = drama_page.find('div', class_='p-a-sm')
+    cast_list = cast_info.find('ul', class_='list no-border p-b')
+    cast_members = cast_list.find_all('li', class_='list-item col-sm-4')
+    members = []
+
+    for member in cast_members:
+        member_profile = member.find('div', class_='col-xs-8 col-sm-7 p-a-0')
+        member_name = member_profile.find('a', class_='text-primary text-ellipsis').text.strip()
+        members.append(member_name)
+
+    return synopsis, rating, members, img, title, genres
